@@ -1,0 +1,65 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        rid: [win-x64, win-arm64]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Publish
+        run: >
+          dotnet publish windows/Ambilight/Ambilight.csproj -c Release -r ${{ matrix.rid }}
+          --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true
+          -p:EnableCompressionInSingleFile=true -o out
+      - name: Zip
+        shell: pwsh
+        run: Compress-Archive -Path out/Ambilight.exe -DestinationPath Ambilight-Windows-${{ matrix.rid }}.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Ambilight-Windows-${{ matrix.rid }}
+          path: Ambilight-Windows-${{ matrix.rid }}.zip
+
+  macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build universal app
+        run: ./build.sh
+      - name: Zip
+        run: ditto -c -k --keepParent build/Ambilight.app Ambilight-macOS.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Ambilight-macOS
+          path: Ambilight-macOS.zip
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [windows, macos]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+      - name: Create release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: >
+          gh release create "${{ github.ref_name }}" dist/*.zip
+          --repo "${{ github.repository }}" --title "Ambilight ${{ github.ref_name }}"
+          --generate-notes

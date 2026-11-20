@@ -1,0 +1,12 @@
+build/
+.build/
+windows/**/bin/
+windows/**/obj/
+dist/
+.DS_Store
+*.swp
+# personal firmware backups and probe sketches
+firmware/backup/
+firmware/PinProbe/
+firmware/ColorProbe/
+firmware/FastAdalight/build/
