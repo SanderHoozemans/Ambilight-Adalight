@@ -4,7 +4,7 @@ namespace Ambilight;
 
 public enum Mode { Off, Ambi, Sides, Chase, White, Static, Anim, Single }
 
-public static class Layout
+public static class LedLayout
 {
     public static readonly string[] AnimNames = { "Regenboog", "Kleurwissel", "Ademen", "Looplicht", "Vuur" };
 
