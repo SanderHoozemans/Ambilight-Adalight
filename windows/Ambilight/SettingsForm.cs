@@ -113,7 +113,7 @@ public sealed class SettingsForm : Form
         Row(L.T("Static colour", "Statische kleur"), colorBtn);
 
         var anim = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList, Width = 200 };
-        anim.Items.AddRange(Layout.AnimNames);
+        anim.Items.AddRange(LedLayout.AnimNames);
         anim.SelectedItem = c.Anim;
         anim.SelectedIndexChanged += (_, _) => { if (!_building) _eng.Update(x => x.Anim = (string)anim.SelectedItem); };
         Row(L.T("Animation", "Animatie"), anim);

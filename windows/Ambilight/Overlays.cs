@@ -55,8 +55,8 @@ public sealed class ZonesForm : Form
     Rectangle ZoneRect(int led, Config c)
     {
         int n = c.Total;
-        int p = Layout.PerimeterIndex(led, n, c);
-        var (x0, y0, x1, y1) = Layout.Zone(p, c, ClientSize.Width, ClientSize.Height);
+        int p = LedLayout.PerimeterIndex(led, n, c);
+        var (x0, y0, x1, y1) = LedLayout.Zone(p, c, ClientSize.Width, ClientSize.Height);
         return Rectangle.FromLTRB(x0, y0, x1, y1);
     }
 
@@ -71,7 +71,7 @@ public sealed class ZonesForm : Form
         for (int i = 0; i < n; i++)
         {
             var r = ZoneRect(i, c);
-            int side = Layout.Locate(Layout.PerimeterIndex(i, n, c), c).side;
+            int side = LedLayout.Locate(LedLayout.PerimeterIndex(i, n, c), c).side;
             Color fill = disp.Length >= 3 * n && (disp[3 * i] + disp[3 * i + 1] + disp[3 * i + 2]) > 0
                 ? Color.FromArgb(disp[3 * i], disp[3 * i + 1], disp[3 * i + 2]) : sideCols[side];
             using var br = new SolidBrush(Color.FromArgb(i == _selected ? 255 : 150, fill));

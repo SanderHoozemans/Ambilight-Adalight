@@ -197,7 +197,7 @@ public sealed class Engine
         var o = new float[3 * n];
         for (int p = 0; p < n; p++)
         {
-            var (x0, y0, x1, y1) = Layout.Zone(p, c, w, h, ox, oy, cw, ch);
+            var (x0, y0, x1, y1) = LedLayout.Zone(p, c, w, h, ox, oy, cw, ch);
             long sr = 0, sg = 0, sb = 0;
             for (int y = y0; y < y1; y++)
             {
@@ -257,7 +257,7 @@ public sealed class Engine
         switch (c.Anim)
         {
             case "Regenboog":
-                for (int i = 0; i < n; i++) Put(i, Hsv((double)Layout.PerimeterIndex(i, n, c) / n + t * 0.08 * sp));
+                for (int i = 0; i < n; i++) Put(i, Hsv((double)LedLayout.PerimeterIndex(i, n, c) / n + t * 0.08 * sp));
                 break;
             case "Kleurwissel":
                 { var col = Hsv(t * 0.05 * sp); for (int i = 0; i < n; i++) Put(i, col); }
@@ -273,7 +273,7 @@ public sealed class Engine
                     double head = t * sp * 20, tail = Math.Max(4.0, n * 0.2);
                     for (int i = 0; i < n; i++)
                     {
-                        double p = Layout.PerimeterIndex(i, n, c);
+                        double p = LedLayout.PerimeterIndex(i, n, c);
                         double d = (head - p) % n; if (d < 0) d += n;
                         if (d < tail) Put(i, baseC, (float)(1 - d / tail));
                     }
@@ -324,7 +324,7 @@ public sealed class Engine
                     if (tp.Length == 3 * n)
                         for (int i = 0; i < n; i++)
                         {
-                            int p = Layout.PerimeterIndex(i, n, c);
+                            int p = LedLayout.PerimeterIndex(i, n, c);
                             des[3 * i] = tp[3 * p]; des[3 * i + 1] = tp[3 * p + 1]; des[3 * i + 2] = tp[3 * p + 2];
                         }
                 }
@@ -334,7 +334,7 @@ public sealed class Engine
                     float[][] cols = { new float[] { 255, 0, 0 }, new float[] { 0, 255, 0 }, new float[] { 0, 0, 255 }, new float[] { 255, 200, 0 } };
                     for (int i = 0; i < n; i++)
                     {
-                        int s = Layout.Locate(Layout.PerimeterIndex(i, n, c), c).side;
+                        int s = LedLayout.Locate(LedLayout.PerimeterIndex(i, n, c), c).side;
                         var col = i == 0 ? new float[] { 255, 255, 255 } : cols[s];
                         des[3 * i] = col[0]; des[3 * i + 1] = col[1]; des[3 * i + 2] = col[2];
                     }
